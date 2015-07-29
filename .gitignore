@@ -1,0 +1,11 @@
+.DS_Store
+*.*~
+*.o
+*.so*
+*.pyc
+*.c
+*.mod
+build/
+*.out
+*.avi
+*.pyo
