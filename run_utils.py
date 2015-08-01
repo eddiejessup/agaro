@@ -58,24 +58,21 @@ class _TaskRunner(object):
     and `__call__` is the closure body.
     """
 
-    def __init__(self, ModelClass, model_kwargs,
-                 t_output_every, t_upto, force_resume=True):
+    def __init__(self, ModelClass, t_output_every, t_upto, force_resume=True):
         self.ModelClass = ModelClass
-        self.model_kwargs = model_kwargs.copy()
         self.t_output_every = t_output_every
         self.t_upto = t_upto
         self.force_resume = force_resume
 
-    def __call__(self, extra_model_kwargs):
-        model_kwargs = self.model_kwargs.copy()
-        model_kwargs.update(extra_model_kwargs)
+    def __call__(self, model_kwargs):
         m = self.ModelClass(**model_kwargs)
         run_model(self.t_output_every, m=m, force_resume=self.force_resume,
                   t_upto=self.t_upto)
 
 
-def run_field_scan(ModelClass, model_kwargs, t_output_every, t_upto, field,
-                   vals, force_resume=True, parallel=False):
+def run_kwarg_scan(ModelClass, model_kwarg_sets,
+                   t_output_every, t_upto,
+                   force_resume=True, parallel=False):
     """Run many models with the same parameters but variable `field`.
 
     For each `val` in `vals`, a new model will be made, and run up to a time.
@@ -84,11 +81,34 @@ def run_field_scan(ModelClass, model_kwargs, t_output_every, t_upto, field,
     Parameters
     ----------
     ModelClass: type
-        A class that can be instantiated into a Model object by calling
-        `ModelClass(model_kwargs)`
+        A class or factory function that returns a model object by
+        calling `ModelClass(model_kwargs)`
+    model_kwarg_sets: list[dict]
+        List of argument sets, each of which can instantiate a model.
+    t_output_every: float
+        see :class:`Runner`.
+    t_upto: float
+        Run each model until the time is equal to this
+    parallel: bool
+        Whether or not to run the models in parallel, using the Multiprocessing
+        library. If `True`, the number of concurrent tasks will be equal to
+        one less than the number of available cores detected.
+     """
+    task_runner = _TaskRunner(ModelClass, t_output_every, t_upto, force_resume)
+    run_func(task_runner, model_kwarg_sets, parallel)
+
+
+def run_field_scan(ModelClass, model_kwargs, t_output_every, t_upto, field,
+                   vals, force_resume=True, parallel=False):
+    """Run many models with a range of parameter sets.
+
+    Parameters
+    ----------
+    ModelClass: callable
+        A class or factory function that returns a model object by
+        calling `ModelClass(model_kwargs)`
     model_kwargs: dict
-        Arguments that can instantiate a `ModelClass` object when passed
-        to the `__init__` method.
+        See `ModelClass` explanation.
     t_output_every: float
         see :class:`Runner`.
     t_upto: float
@@ -102,7 +122,6 @@ def run_field_scan(ModelClass, model_kwargs, t_output_every, t_upto, field,
         library. If `True`, the number of concurrent tasks will be equal to
         one less than the number of available cores detected.
      """
-    task_runner = _TaskRunner(ModelClass, model_kwargs, t_output_every, t_upto,
-                              force_resume)
-    extra_model_kwarg_sets = [{field: val} for val in vals]
-    run_func(task_runner, extra_model_kwarg_sets, parallel)
+    model_kwarg_sets = [dict(model_kwargs, field=val) for val in vals]
+    run_kwarg_scan(ModelClass, model_kwarg_sets,
+                   t_output_every, t_upto, force_resume, parallel)
