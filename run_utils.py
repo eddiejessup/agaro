@@ -44,13 +44,14 @@ def resume_runs(dirnames, t_output_every, t_upto, parallel=False):
         Whether or not to run the models in parallel, using the Multiprocessing
         library. If `True`, the number of concurrent tasks will be equal to
         one less than the number of available cores detected.
-     """
+    """
     run_model_partial = partial(run_model, t_output_every, force_resume=True,
                                 t_upto=t_upto)
     run_func(run_model_partial, dirnames, parallel)
 
 
 class _TaskRunner(object):
+
     """Replacement for a closure, which I would use if
     the multiprocessing module supported them.
 
@@ -93,7 +94,7 @@ def run_kwarg_scan(ModelClass, model_kwarg_sets,
         Whether or not to run the models in parallel, using the Multiprocessing
         library. If `True`, the number of concurrent tasks will be equal to
         one less than the number of available cores detected.
-     """
+    """
     task_runner = _TaskRunner(ModelClass, t_output_every, t_upto, force_resume)
     run_func(task_runner, model_kwarg_sets, parallel)
 
@@ -121,7 +122,7 @@ def run_field_scan(ModelClass, model_kwargs, t_output_every, t_upto, field,
         Whether or not to run the models in parallel, using the Multiprocessing
         library. If `True`, the number of concurrent tasks will be equal to
         one less than the number of available cores detected.
-     """
+    """
     model_kwarg_sets = [dict(model_kwargs, field=val) for val in vals]
     run_kwarg_scan(ModelClass, model_kwarg_sets,
                    t_output_every, t_upto, force_resume, parallel)

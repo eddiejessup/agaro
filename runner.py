@@ -5,6 +5,7 @@ from agaro import output_utils
 
 
 class Runner(object):
+
     """Wrapper for loading and iterating model objects, and saving their output.
 
     There are several ways to initialise the object.
