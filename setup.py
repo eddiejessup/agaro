@@ -1,10 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
 import setuptools
 from setuptools import setup
-
 
 with open('README.rst') as readme_file:
     readme = readme_file.read()
@@ -38,8 +36,8 @@ setup(
     zip_safe=False,
     keywords='agaro',
     classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
-        'Intended Audience :: Developers',
+        'Development Status :: 4 - Beta',
+        'Intended Audience :: Science/Research',
         'License :: OSI Approved :: BSD License',
         'Natural Language :: English',
         "Programming Language :: Python :: 2",
@@ -48,6 +46,7 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
+        'Topic :: Scientific/Engineering',
     ],
     test_suite='tests',
     tests_require=test_requirements
