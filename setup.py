@@ -22,7 +22,7 @@ test_requirements = [
 
 setup(
     name='agaro',
-    version='0.1.0',
+    version='0.1.1',
     description="Framework to run models",
     long_description=readme + '\n\n' + history,
     author="Elliot Marsden",
