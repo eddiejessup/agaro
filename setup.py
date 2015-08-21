@@ -12,12 +12,15 @@ with open('HISTORY.rst') as history_file:
 
 requirements = [
     'numpy',
+    'scipy',
     'ciabatta',
 ]
 
 test_requirements = [
     'Cython',
+    'scipy',
     'numpy',
+    'ciabatta',
 ]
 
 setup(
